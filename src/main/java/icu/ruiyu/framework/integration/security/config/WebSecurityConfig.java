@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationRegistry -> authorizationRegistry
                         //允许对于网站静态资源的无授权访问
-                        .requestMatchers(HttpMethod.GET, "/", "/*.html").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/*.html", "/authorize", "/oauth/redirect").permitAll()
                         //对登录注册允许匿名访问
                         .requestMatchers("/user/login", "/user/register", "/test/**").permitAll()
                         //跨域请求会先进行一次options请求
