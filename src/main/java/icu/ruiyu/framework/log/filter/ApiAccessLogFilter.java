@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -25,7 +26,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
-public class ApiAccessLogFilter extends OncePerRequestFilter implements Ordered {
+@Order(Ordered.HIGHEST_PRECEDENCE + 10)
+public class ApiAccessLogFilter extends OncePerRequestFilter {
 
     @Value("${api-access-log.trace-id-header:X-Trace-Id}")
     private String traceIdHeader;
@@ -36,16 +38,8 @@ public class ApiAccessLogFilter extends OncePerRequestFilter implements Ordered 
     @Value("${api-access-log.logger-name:apiAccessLog}")
     private String apiAccessLogName;
 
-    @Value("${api-access-log.filter-order:2147483647}")
-    private int filterOrder;
-
     @Value("${api-access-log.exclude-methods:OPTIONS}")
     private List<String> excludeMethods;
-
-    @Override
-    public int getOrder() {
-        return filterOrder;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
