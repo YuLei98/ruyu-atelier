@@ -2,6 +2,7 @@ package icu.ruiyu.framework.integration.security.controller;
 
 import cn.hutool.jwt.JWT;
 import icu.ruiyu.framework.common.CommonResult;
+import icu.ruiyu.framework.common.annotation.Idempotent;
 import icu.ruiyu.framework.integration.security.dto.SignInReq;
 import icu.ruiyu.framework.integration.security.dto.SignUpReq;
 import icu.ruiyu.framework.integration.security.model.Constants;
@@ -41,6 +42,7 @@ public class AuthController {
     /**
      * 用户注册
      */
+    @Idempotent
     @PostMapping("/register")
     public CommonResult<Void> register(@RequestBody SignUpReq req) {
         if (req.getUsername() == null || req.getUsername().isBlank()) {
@@ -60,6 +62,7 @@ public class AuthController {
     /**
      * 用户登录，返回 JWT Token
      */
+    @Idempotent
     @PostMapping("/login")
     public CommonResult<String> login(@RequestBody SignInReq req) {
         try {
