@@ -1,4 +1,4 @@
-package icu.ruiyu.framework.integration.security.customized;
+package icu.ruiyu.framework.integration.security.auth;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

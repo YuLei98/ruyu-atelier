@@ -1,4 +1,4 @@
-package icu.ruiyu.framework.integration.security.customized;
+package icu.ruiyu.framework.integration.security.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

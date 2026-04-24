@@ -1,4 +1,4 @@
-package icu.ruiyu.framework.integration.security.customized;
+package icu.ruiyu.framework.integration.security.auth;
 
 import icu.ruiyu.framework.integration.security.model.Constants;
 import jakarta.servlet.FilterChain;
@@ -14,19 +14,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import cn.hutool.jwt.JWTUtil;
-
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Slf4j
+@Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private final static String AUTH_HEADER = "Authorization";
     private final static String AUTH_HEADER_TYPE = "Bearer";
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private Constants constants;
 
     /**
      * @param request
@@ -44,7 +48,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         String authToken = authHeader.split(" ")[1];
         log.info("auth Token: {}", authToken);
-        if (!JWTUtil.verify(authToken, Constants.JWT_SIGN_KEY.getBytes(StandardCharsets.UTF_8))) {
+        if (!JWTUtil.verify(authToken, constants.getJwtSignKey().getBytes(StandardCharsets.UTF_8))) {
             log.info("invalid token");
             filterChain.doFilter(request, response);
             return;

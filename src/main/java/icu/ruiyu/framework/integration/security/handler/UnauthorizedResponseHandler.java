@@ -1,4 +1,4 @@
-package icu.ruiyu.framework.integration.security.customized;
+package icu.ruiyu.framework.integration.security.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @Component
 @Slf4j
-public class MyUnauthorizedHandler implements AuthenticationEntryPoint {
+public class UnauthorizedResponseHandler implements AuthenticationEntryPoint {
     /**
      * @param request
      * @param response

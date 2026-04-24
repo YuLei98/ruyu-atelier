@@ -1,4 +1,4 @@
-package icu.ruiyu.framework.integration.security.customized;
+package icu.ruiyu.framework.integration.security.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @Component
 @Slf4j
-public class MyAccessDeniedHandler implements AccessDeniedHandler {
+public class AccessDeniedResponseHandler implements AccessDeniedHandler {
     /**
      * @param request
      * @param response

@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum RoleType {
-    // NOTE: 此处角色名应以 ROLE_ 为前缀，否则将一直报错。
-    ADMIN("ROLE_admin"),
-    USER("ROLE_user");
+    // NOTE: 角色名统一使用 ROLE_ 前缀
+    ADMIN("ROLE_ADMIN"),
+    USER("ROLE_USER");
 
     final private String roleName;
 

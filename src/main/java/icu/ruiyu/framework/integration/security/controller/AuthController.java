@@ -24,12 +24,14 @@ public class AuthController {
         private String password;
     }
 
+    @Autowired
+    private Constants constants;
 
     @Autowired
     AuthenticationManager authenticationManager;
 
-    @GetMapping("/register")
-    public String register() {
+    @PostMapping("/register")
+    public String register(@RequestBody SignInReq req) {
         return "注册成功";
     }
 
@@ -43,13 +45,13 @@ public class AuthController {
         String token = JWT.create()
 //                .setExpiresAt(new Date(System.currentTimeMillis() + (1000 * 30)))
                 .setPayload("username", req.getUsername())
-                .setKey(Constants.JWT_SIGN_KEY.getBytes(StandardCharsets.UTF_8))
+                .setKey(constants.getJwtSignKey().getBytes(StandardCharsets.UTF_8))
                 .sign();
 
         return token;
     }
 
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/info/{username}")
     public String getUserDetail(@PathVariable String username) {
         return "用户详情: " + username;

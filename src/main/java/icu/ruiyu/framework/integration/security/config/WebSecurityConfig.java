@@ -1,13 +1,14 @@
 package icu.ruiyu.framework.integration.security.config;
 
 
-import icu.ruiyu.framework.integration.security.customized.JwtAuthenticationTokenFilter;
-import icu.ruiyu.framework.integration.security.customized.MyAccessDeniedHandler;
-import icu.ruiyu.framework.integration.security.customized.MyUnauthorizedHandler;
-import icu.ruiyu.framework.integration.security.customized.JwtAuthenticationProvider;
+import icu.ruiyu.framework.integration.security.auth.JwtAuthenticationTokenFilter;
+import icu.ruiyu.framework.integration.security.auth.JwtAuthenticationProvider;
+import icu.ruiyu.framework.integration.security.handler.UnauthorizedResponseHandler;
+import icu.ruiyu.framework.integration.security.handler.AccessDeniedResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -27,10 +28,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class WebSecurityConfig {
     @Autowired
-    private MyUnauthorizedHandler unauthorizedHandler;
+    private UnauthorizedResponseHandler unauthorizedHandler;
 
     @Autowired
-    private MyAccessDeniedHandler accessDeniedHandler;
+    private AccessDeniedResponseHandler accessDeniedHandler;
+
+    @Autowired
+    @Lazy
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -40,11 +45,6 @@ public class WebSecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
-        return new JwtAuthenticationTokenFilter();
     }
 
     @Bean
@@ -76,7 +76,7 @@ public class WebSecurityConfig {
                 //使用自定义provider
                 .authenticationProvider(jwtAuthenticationProvider())
                 //添加JWT filter
-                .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 //添加自定义未授权和未登录结果返回
                 .exceptionHandling(exceptionConfigurer -> exceptionConfigurer
                         .accessDeniedHandler(accessDeniedHandler)

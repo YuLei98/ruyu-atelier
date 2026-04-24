@@ -1,4 +1,4 @@
-package icu.ruiyu.framework.integration.security.customized;
+package icu.ruiyu.framework.integration.security.auth;
 
 import icu.ruiyu.framework.integration.security.model.User;
 import icu.ruiyu.framework.integration.security.service.UserService;
