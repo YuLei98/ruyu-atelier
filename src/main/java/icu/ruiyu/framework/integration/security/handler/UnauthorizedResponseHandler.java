@@ -10,22 +10,19 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
+/**
+ * 未认证响应处理，返回 401 JSON
+ */
 @Slf4j
+@Component
 public class UnauthorizedResponseHandler implements AuthenticationEntryPoint {
-    /**
-     * @param request
-     * @param response
-     * @param authException
-     * @throws IOException
-     * @throws ServletException
-     */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.error("Unauthorized access", authException);
+        log.error("Unauthorized access: {}", authException.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        response.getWriter().println("认证失败");
+        response.getWriter().print("认证失败");
         response.getWriter().flush();
     }
 }

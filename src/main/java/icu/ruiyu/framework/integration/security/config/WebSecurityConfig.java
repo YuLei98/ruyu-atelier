@@ -1,6 +1,5 @@
 package icu.ruiyu.framework.integration.security.config;
 
-
 import icu.ruiyu.framework.integration.security.auth.JwtAuthenticationTokenFilter;
 import icu.ruiyu.framework.integration.security.auth.JwtAuthenticationProvider;
 import icu.ruiyu.framework.integration.security.handler.UnauthorizedResponseHandler;
@@ -23,6 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Spring Security 配置类
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -54,37 +56,31 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        //由于使用的是JWT，这里不需要csrf防护
         httpSecurity
+                // 禁用 CSRF
                 .csrf(CsrfConfigurer::disable)
-                //基于token，所以不需要session
+                // 基于 Token，不需要 Session
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationRegistry -> authorizationRegistry
-                        //允许对于网站静态资源的无授权访问
+                        // 静态资源允许无授权访问
                         .requestMatchers(HttpMethod.GET, "/", "/*.html", "/authorize", "/oauth/redirect").permitAll()
-                        //对登录注册允许匿名访问
-                        .requestMatchers("/user/login", "/user/register", "/test/**").permitAll()
-                        //跨域请求会先进行一次options请求
+                        // 登录注册注销允许匿名访问
+                        .requestMatchers("/user/login", "/user/register", "/user/logout", "/test/**").permitAll()
+                        // 跨域预检请求
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        // 除上面外的所有请求全部需要鉴权认证
+                        // 其他请求需要认证
                         .anyRequest().authenticated()
                 )
-                //禁用缓存
-                .headers(headersConfigurer -> headersConfigurer
-                        .cacheControl(HeadersConfigurer.CacheControlConfig::disable)
-                )
-                //使用自定义provider
+                // 禁用缓存
+                .headers(headersConfigurer -> headersConfigurer.cacheControl(HeadersConfigurer.CacheControlConfig::disable))
+                // 使用自定义认证 Provider
                 .authenticationProvider(jwtAuthenticationProvider())
-                //添加JWT filter
+                // 添加 JWT 过滤器
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                //添加自定义未授权和未登录结果返回
+                // 配置未授权和拒绝访问的响应处理
                 .exceptionHandling(exceptionConfigurer -> exceptionConfigurer
                         .accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(unauthorizedHandler));
         return httpSecurity.build();
     }
-
-
-
-
 }

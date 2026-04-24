@@ -9,9 +9,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+/**
+ * JWT 认证 Provider，用于验证用户名密码
+ */
 @Slf4j
+@Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -19,30 +25,22 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    /**
-     * @param authentication
-     * @return
-     * @throws AuthenticationException
-     */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = String.valueOf(authentication.getPrincipal());
         String password = String.valueOf(authentication.getCredentials());
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        Boolean pass = passwordEncoder.matches(password, userDetails.getPassword());
-        log.info("is pass: {}", pass);
-        if (pass) {
-            return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
+        try {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (passwordEncoder.matches(password, userDetails.getPassword())) {
+                return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
+            }
+            throw new BadCredentialsException("密码错误");
+        } catch (UsernameNotFoundException e) {
+            throw new BadCredentialsException("用户不存在");
         }
-
-        throw new BadCredentialsException("Error!!");
     }
 
-    /**
-     * @param authentication
-     * @return
-     */
     @Override
     public boolean supports(Class<?> authentication) {
         return UsernamePasswordAuthenticationToken.class.equals(authentication);
