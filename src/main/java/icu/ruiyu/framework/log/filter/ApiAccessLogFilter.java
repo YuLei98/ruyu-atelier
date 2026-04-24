@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -17,15 +16,16 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * API 访问日志过滤器，记录所有 HTTP 请求到 api-access.log
  */
 @Slf4j
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE + 10)
-public class ApiAccessLogFilter extends OncePerRequestFilter {
+public class ApiAccessLogFilter extends OncePerRequestFilter implements Ordered {
 
     @Value("${api-access-log.trace-id-header:X-Trace-Id}")
     private String traceIdHeader;
@@ -35,6 +35,17 @@ public class ApiAccessLogFilter extends OncePerRequestFilter {
 
     @Value("${api-access-log.logger-name:apiAccessLog}")
     private String apiAccessLogName;
+
+    @Value("${api-access-log.filter-order:2147483647}")
+    private int filterOrder;
+
+    @Value("${api-access-log.exclude-methods:OPTIONS}")
+    private List<String> excludeMethods;
+
+    @Override
+    public int getOrder() {
+        return filterOrder;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -117,6 +128,9 @@ public class ApiAccessLogFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return "OPTIONS".equalsIgnoreCase(request.getMethod());
+        return excludeMethods.stream()
+                .map(String::toUpperCase)
+                .collect(Collectors.toList())
+                .contains(request.getMethod().toUpperCase());
     }
 }
