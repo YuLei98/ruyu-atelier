@@ -10,7 +10,7 @@
         <!-- %logger{36} 表示 Logger 名字最长36个字符 -->
         <property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} --->> [%thread] %-5level %logger{36} --->> %msg%n" />
         <!-- 定义日志存储的路径 -->
-        <property name="FILE_PATH" value="/Users/yuuleii/Desktop/framework/logs" />
+        <property name="FILE_PATH" value="${sys:log.path:-logs}" />
         <property name="FILE_NAME" value="boot" />
     </Properties>
 
@@ -57,6 +57,17 @@
             <DefaultRolloverStrategy max="15"/>
         </RollingFile>
 
+        <!-- API Access 日志 -->
+        <RollingFile name="ApiAccessLog" fileName="${FILE_PATH}/api-access.log" filePattern="${FILE_PATH}/${FILE_NAME}-API-ACCESS-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+
         <!--druid的日志记录追加器-->
 <!--        <RollingFile name="druidSqlRollingFile" fileName="${FILE_PATH}/druid-sql.log" filePattern="${FILE_PATH}/$${date:yyyy-MM}/api-%d{yyyy-MM-dd}-%i.log.gz">-->
 <!--            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5level %L %M - %msg%xEx%n"/>-->
@@ -93,6 +104,11 @@
             <appender-ref ref="Filelog" />
             <appender-ref ref="RollingFileInfo" />
 <!--            <appender-ref ref="RollingFileError"/>-->
+        </logger>
+
+        <!-- API Access 日志 -->
+        <logger name="apiAccessLog" level="info" additivity="false">
+            <appender-ref ref="ApiAccessLog" />
         </logger>
 
         <!-- 父 -->

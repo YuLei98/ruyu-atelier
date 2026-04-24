@@ -29,7 +29,7 @@ Server runs on port **8000**.
 - **Cache**: Spring Data Redis (StringRedisTemplate)
 - **Logging**: Log4j2 (replaces default Logback)
 - **Utilities**: Hutool 5.7.13, Fastjson 2.0.16
-- **AOP**: Spring AOP for request/response logging
+- **Logging**: Log4j2 (replaces default Logback) with API access logging
 
 ## Architecture
 
@@ -39,12 +39,11 @@ icu.ruiyu.framework/
 ├── common/          # CommonResult, ResponseEnum
 ├── exception/        # BusinessException, GlobalExceptionHandler
 ├── log/
-│   ├── annotation/  # @RecordRequestAndResponse
-│   └── aspect/       # RecordRequestAndResponseAspect (AOP logging)
+│   └── filter/      # ApiAccessLogFilter (HTTP access logging)
 └── integration/
     ├── security/     # JWT auth, WebSecurityConfig, AuthController
     ├── mysql/        # User model, UserMapper, TestController
-    ├── cache/        # CacheClient (Redis wrapper)
+    ├── cache/        # CacheService (Redis wrapper)
     └── OAuth2/       # GithubLoginController (GitHub OAuth2)
 
 com.ruiyu.framework/
@@ -76,6 +75,7 @@ Handles: `MissingServletRequestParameterException`, `NullPointerException`, `Bus
 - `spring.datasource.*` - MySQL connection (localhost:3306/springboot_demo)
 - `spring.data.redis.*` - Redis connection (localhost:6379)
 - `github.client.*` - GitHub OAuth2 app credentials
+- `api-access-log.*` - API access log configuration (trace-id-header, max-body-length, logger-name)
 
 ## Development Guidelines
 
