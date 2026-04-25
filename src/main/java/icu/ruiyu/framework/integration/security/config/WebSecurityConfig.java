@@ -63,7 +63,7 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationRegistry -> authorizationRegistry
                         // 静态资源允许无授权访问
-                        .requestMatchers(HttpMethod.GET, "/", "/*.html", "/authorize", "/oauth/redirect").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/*.html", "/oauth/**").permitAll()
                         // 登录注册注销允许匿名访问
                         .requestMatchers("/user/login", "/user/register", "/user/logout", "/test/**").permitAll()
                         // Swagger UI 允许匿名访问

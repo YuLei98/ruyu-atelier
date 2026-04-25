@@ -5,10 +5,7 @@ import icu.ruiyu.framework.integration.mysql.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -20,14 +17,16 @@ public class TestController {
     UserMapper userMapper;
 
     @GetMapping("/1")
+    @ResponseBody
     public User defaultPage() {
         User user = new User();
-        user.setName("mysql-name");
+        user.setNickname("mysql-name");
         user.setAge(111);
         return user;
     }
 
     @GetMapping("/get/{id}")
+    @ResponseBody
     public User findAll(@PathVariable("id") int id ){
         log.info("findAll id:{}",id);
 //        return userMapper.selectById(id);

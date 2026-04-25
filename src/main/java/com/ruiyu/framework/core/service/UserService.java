@@ -3,7 +3,7 @@ package com.ruiyu.framework.core.service;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.ruiyu.framework.core.model.User;
-import icu.ruiyu.framework.integration.cache.CacheClient;
+import icu.ruiyu.framework.integration.cache.CacheService;
 import icu.ruiyu.framework.integration.cache.ExpireEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class UserService {
     @Autowired
-    CacheClient cacheClient;
+    CacheService cacheService;
 
     private User createUser(String username, Integer age, String nickname) {
         User user = new User();
@@ -27,11 +27,11 @@ public class UserService {
     }
 
     private void putUserIntoCache(User user) {
-        cacheClient.set(user.getName(), JSON.toJSONString(user), ExpireEnum.THIRTY_SECONDS);
+        cacheService.set(user.getName(), JSON.toJSONString(user), ExpireEnum.THIRTY_SECONDS);
     }
 
     public Optional<User> queryUserByUsername(String username) {
-        String user = cacheClient.get(username);
+        String user = cacheService.get(username);
         if (StrUtil.isBlank(user)) {
             log.error("get user from cache, username:{}", username);
             return Optional.empty();
