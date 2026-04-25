@@ -34,7 +34,7 @@ class AuthControllerIdempotentTest {
 
     @Test
     void testRegisterIdempotent() throws Exception {
-        String testUsername = "idempotent_test_" + System.currentTimeMillis();
+        String testUsername = "idem" + System.currentTimeMillis();
 
         SignUpReq req = new SignUpReq();
         req.setUsername(testUsername);
@@ -63,7 +63,7 @@ class AuthControllerIdempotentTest {
 
     @Test
     void testLoginIdempotent() throws Exception {
-        String testUsername = "login_idempotent_" + System.currentTimeMillis();
+        String testUsername = "lidm" + System.currentTimeMillis();
 
         // First register a user
         SignUpReq registerReq = new SignUpReq();
@@ -102,8 +102,8 @@ class AuthControllerIdempotentTest {
     void testDifferentUsersNotIdempotent() throws Exception {
         // This test verifies that different usernames create different idempotent keys
         String timestamp = String.valueOf(System.currentTimeMillis());
-        String username1 = "user1_" + timestamp;
-        String username2 = "user2_" + timestamp;
+        String username1 = "u1" + timestamp;
+        String username2 = "u2" + timestamp;
 
         SignUpReq req1 = new SignUpReq();
         req1.setUsername(username1);

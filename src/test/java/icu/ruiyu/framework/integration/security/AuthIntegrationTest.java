@@ -32,7 +32,7 @@ class AuthIntegrationTest {
 
     @Test
     void testRegisterSuccess() throws Exception {
-        String testUsername = "testuser_" + System.currentTimeMillis();
+        String testUsername = "u" + System.currentTimeMillis();
 
         SignUpReq req = new SignUpReq();
         req.setUsername(testUsername);
@@ -48,7 +48,7 @@ class AuthIntegrationTest {
 
     @Test
     void testRegisterDuplicateUsername() throws Exception {
-        String testUsername = "duplicate_" + System.currentTimeMillis();
+        String testUsername = "dup" + System.currentTimeMillis();
 
         SignUpReq req1 = new SignUpReq();
         req1.setUsername(testUsername);
@@ -72,7 +72,7 @@ class AuthIntegrationTest {
 
     @Test
     void testLoginSuccess() throws Exception {
-        String testUsername = "logintest_" + System.currentTimeMillis();
+        String testUsername = "login" + System.currentTimeMillis();
 
         SignUpReq registerReq = new SignUpReq();
         registerReq.setUsername(testUsername);
@@ -95,7 +95,7 @@ class AuthIntegrationTest {
 
     @Test
     void testLoginInvalidPassword() throws Exception {
-        String testUsername = "wrongpass_" + System.currentTimeMillis();
+        String testUsername = "wrong" + System.currentTimeMillis();
 
         SignUpReq registerReq = new SignUpReq();
         registerReq.setUsername(testUsername);
@@ -119,7 +119,7 @@ class AuthIntegrationTest {
     @Test
     void testLoginNonexistentUser() throws Exception {
         SignInReq loginReq = new SignInReq();
-        loginReq.setUsername("nonexistent_user_12345");
+        loginReq.setUsername("nouser_" + System.currentTimeMillis());
         loginReq.setPassword("password123");
 
         mockMvc.perform(post("/user/login")
