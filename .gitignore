@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment & Logs ###
+.env
+*.log
+logs/
+arthas-boot.jar
+
+### OpenSpec ###
+.claude/
