@@ -57,7 +57,11 @@ icu.ruiyu.framework/
     ├── security/      # JWT auth, WebSecurityConfig, AuthController
     ├── mysql/        # User model, UserMapper, TestController
     ├── cache/        # CacheService (Redis wrapper)
-    └── OAuth2/       # GithubLoginController (GitHub OAuth2)
+    ├── OAuth2/       # OAuth2 统一登录（支持多 Provider）
+    │   ├── config/   # OAuthProperties (通用), GithubProperties (GitHub 专用)
+    │   ├── controller/ # OAuthController (统一入口，provider 路由)
+    │   ├── service/  # OAuthService 接口 + 实现
+    │   └── model/    # OAuthUser (通用用户模型)
 
 com.ruiyu.framework/
 └── core/            # Core business logic (UserService)
@@ -117,6 +121,8 @@ Handles:
 - **Complex requirements**: Use OpenSpec to manage changes (`/opsx:propose`, `/opsx:apply`, `/opsx:archive`)
 - All requirements must include test cases
 - **All tests must pass before delivery** — run `mvn test` to verify
+- 包模块组织合理
+- 代码风格满足阿里 Java 研发规范
 
 ### Requirement Completion Workflow
 1. 需求验收通过后
