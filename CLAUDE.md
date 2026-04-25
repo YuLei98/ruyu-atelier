@@ -8,7 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Build
 mvn clean package
 
-# Run
+# Run (需要设置环境变量)
+export JWT_SECRET_KEY=your-secret-key
+export REDIS_PASSWORD=foobared
+export DATASOURCE_PASSWORD=root
 mvn spring-boot:run
 
 # Run tests
@@ -27,9 +30,8 @@ Server runs on port **8000**.
 - **Security**: Spring Security with JWT (stateless sessions, BCrypt passwords)
 - **Database**: MyBatis Plus 3.5.11 + MySQL
 - **Cache**: Spring Data Redis (StringRedisTemplate)
-- **Logging**: Log4j2 (replaces default Logback)
-- **Utilities**: Hutool 5.7.13, Fastjson 2.0.16
 - **Logging**: Log4j2 (replaces default Logback) with API access logging
+- **Utilities**: Hutool 5.7.13, Fastjson 2.0.16
 
 ## Architecture
 
@@ -71,11 +73,12 @@ MyBatis mappers are scanned from `icu.ruiyu.framework.integration.mysql.mapper`.
 Handles: `MissingServletRequestParameterException`, `NullPointerException`, `BusinessException`.
 
 ### Application Properties
-- `jwt.secret-key` - JWT signing key (must change in production)
-- `spring.datasource.*` - MySQL connection (localhost:3306/springboot_demo)
-- `spring.data.redis.*` - Redis connection (localhost:6379)
-- `github.client.*` - GitHub OAuth2 app credentials
-- `api-access-log.*` - API access log configuration (trace-id-header, max-body-length, logger-name)
+敏感配置通过环境变量读取，默认值为本地开发配置：
+- `jwt.secret-key` - JWT signing key (`${JWT_SECRET_KEY}`)
+- `spring.datasource.*` - MySQL connection (`${DATASOURCE_URL/USERNAME/PASSWORD}`)
+- `spring.data.redis.*` - Redis connection (`${REDIS_PORT/PASSWORD}`)
+- `github.client.*` - GitHub OAuth2 app credentials (`${GITHUB_CLIENT_ID/SECRET}`)
+- `api-access-log.*` - API access log configuration (trace-id-header, max-body-length, logger-name, exclude-methods)
 
 ## Development Guidelines
 
