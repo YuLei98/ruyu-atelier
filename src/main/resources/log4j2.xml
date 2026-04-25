@@ -68,6 +68,17 @@
             <DefaultRolloverStrategy max="30"/>
         </RollingFile>
 
+        <!-- HTTP Client 日志 -->
+        <RollingFile name="HttpClientLog" fileName="${FILE_PATH}/http-client.log" filePattern="${FILE_PATH}/${FILE_NAME}-HTTP-CLIENT-%d{yyyy-MM-dd}_%i.log.gz">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+        </RollingFile>
+
         <!--druid的日志记录追加器-->
         <RollingFile name="druidSqlRollingFile" fileName="${FILE_PATH}/druid-sql.log" filePattern="${FILE_PATH}/$${date:yyyy-MM}/api-%d{yyyy-MM-dd}-%i.log.gz">
             <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5level %L %M - %msg%xEx%n"/>
@@ -109,6 +120,11 @@
         <!-- API Access 日志 -->
         <logger name="apiAccessLog" level="info" additivity="false">
             <appender-ref ref="ApiAccessLog" />
+        </logger>
+
+        <!-- HTTP Client 日志 -->
+        <logger name="httpClient" level="info" additivity="false">
+            <appender-ref ref="HttpClientLog" />
         </logger>
 
         <!-- 父 -->

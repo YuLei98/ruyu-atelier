@@ -58,7 +58,7 @@ icu.ruiyu.framework/
     ├── security/      # JWT auth, WebSecurityConfig, AuthController
     ├── mysql/        # User model, UserMapper, TestController
     ├── cache/        # CacheService (Redis wrapper)
-    ├── http/         # HttpClientService (HTTP 请求封装，支持复用)
+    ├── restclient/   # RestClient (HTTP 请求封装，支持复用)
     ├── ratelimit/    # API 限流（滑动窗口/令牌桶算法，Redis + Lua）
     │   ├── RateLimiterFilter.java       # 全局限流过滤器
     │   ├── RateLimiterService.java      # 限流服务接口
@@ -122,7 +122,7 @@ Handles:
 - `github.client.*` - GitHub OAuth2 app credentials (`${GITHUB_CLIENT_ID/SECRET}`)
 - `api-access-log.*` - API access log configuration (trace-id-header, max-body-length, logger-name, exclude-methods)
 - `ratelimit.*` - Rate limiter configuration (global enabled, algorithm, window-seconds, max-requests, key-type, exclude-paths)
-- `framework.http.*` - HTTP 客户端配置 (connectTimeout, readTimeout, maxConnections)
+- `framework.restclient.*` - REST 客户端配置 (connectTimeout, readTimeout, maxConnections)
 - `langchain4j.open-ai.*` - OpenAI API 配置 (`${OPENAI_API_KEY}`, `${OPENAI_BASE_URL}`, `${OPENAI_MODEL_NAME}`)
 
 ### Environment Configuration
@@ -145,6 +145,20 @@ Handles:
 - **CSRF 防护**：`/oauth/redirect` 接口验证 `state` 参数防止 CSRF 攻击
 - **限流保护**：OAuth 回调接口默认限流 30 次/分钟
 - **统一异常处理**：`OAuthException` 异常由 `GlobalExceptionHandler` 处理
+
+### RestClient HTTP 客户端
+统一封装 HTTP 请求，支持所有外部 API 调用：
+
+**日志记录**：`httpClient` logger 记录所有请求到 `logs/http-client.log`
+- 格式：`method | url | status | duration | req:body | res:body | error`
+- 示例：`POST | https://api.github.com/xxx | 200 | 245ms | req:{} | res:access_token=xxx`
+
+**配置项** (`application.yml`)：
+```yaml
+framework.restclient:
+  connect-timeout: 5000
+  read-timeout: 10000
+```
 
 ### LLM 大模型集成
 基于 LangChain4j 1.13.1 的 OpenAI GPT 模型集成：

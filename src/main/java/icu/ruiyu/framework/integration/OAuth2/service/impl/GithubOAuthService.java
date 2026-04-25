@@ -7,7 +7,7 @@ import icu.ruiyu.framework.integration.OAuth2.config.GithubProperties;
 import icu.ruiyu.framework.integration.OAuth2.config.OAuthProperties;
 import icu.ruiyu.framework.integration.OAuth2.model.OAuthUser;
 import icu.ruiyu.framework.integration.OAuth2.service.OAuthService;
-import icu.ruiyu.framework.integration.http.HttpClientService;
+import icu.ruiyu.framework.integration.restclient.RestClient;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class GithubOAuthService implements OAuthService {
     private OAuthProperties oauthProperties;
 
     @Resource
-    private HttpClientService httpClientService;
+    private RestClient restClient;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -56,7 +56,7 @@ public class GithubOAuthService implements OAuthService {
         Map<String, String> headers = new HashMap<>();
         headers.put("accept", oauthProperties.getAcceptMediaType());
 
-        String responseStr = httpClientService.post(url, "", headers);
+        String responseStr = restClient.post(url, "", headers);
         log.debug("Access token response: {}", responseStr);
 
         JsonNode jsonNode;
@@ -84,7 +84,7 @@ public class GithubOAuthService implements OAuthService {
         headers.put("accept", oauthProperties.getAcceptMediaType());
         headers.put("Authorization", oauthProperties.getAuthorizationScheme() + " " + accessToken);
 
-        String userInfoStr = httpClientService.get(url, headers);
+        String userInfoStr = restClient.get(url, headers);
         log.debug("User info response: {}", userInfoStr);
 
         OAuthUser oauthUser = new OAuthUser();

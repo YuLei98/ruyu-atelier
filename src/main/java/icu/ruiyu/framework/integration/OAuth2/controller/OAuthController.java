@@ -1,6 +1,5 @@
 package icu.ruiyu.framework.integration.OAuth2.controller;
 
-import icu.ruiyu.framework.common.annotation.RateLimiter;
 import icu.ruiyu.framework.exception.OAuthException;
 import icu.ruiyu.framework.integration.OAuth2.model.OAuthUser;
 import icu.ruiyu.framework.integration.OAuth2.service.OAuthService;
@@ -58,7 +57,6 @@ public class OAuthController {
      * @param provider OAuth 提供商类型
      * @return 用户信息
      */
-    @RateLimiter(maxRequests = 30, windowSeconds = 60, message = "OAuth 请求过于频繁，请稍后再试")
     @GetMapping("/redirect")
     public ResponseEntity<OAuthUser> redirect(
             @RequestParam("code") String code,
