@@ -8,10 +8,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Build
 mvn clean package
 
-# Run (需要设置环境变量)
-export JWT_SECRET_KEY=your-secret-key
-export REDIS_PASSWORD=foobared
-export DATASOURCE_PASSWORD=root
+# 配置环境变量 (使用 .env 文件或手动导出)
+# 复制 .env.example 为 .env 并填入实际值
+cp .env.example .env
+
+# Run
 mvn spring-boot:run
 
 # Run tests
@@ -73,12 +74,17 @@ MyBatis mappers are scanned from `icu.ruiyu.framework.integration.mysql.mapper`.
 Handles: `MissingServletRequestParameterException`, `NullPointerException`, `BusinessException`.
 
 ### Application Properties
-敏感配置通过环境变量读取，默认值为本地开发配置：
+敏感配置通过 `.env` 文件 + 环境变量读取，默认值为本地开发配置：
 - `jwt.secret-key` - JWT signing key (`${JWT_SECRET_KEY}`)
 - `spring.datasource.*` - MySQL connection (`${DATASOURCE_URL/USERNAME/PASSWORD}`)
 - `spring.data.redis.*` - Redis connection (`${REDIS_PORT/PASSWORD}`)
 - `github.client.*` - GitHub OAuth2 app credentials (`${GITHUB_CLIENT_ID/SECRET}`)
 - `api-access-log.*` - API access log configuration (trace-id-header, max-body-length, logger-name, exclude-methods)
+
+### Environment Configuration
+- `.env.example` - 环境变量模板（推送到 GitHub）
+- `.env` - 本地环境变量（已加入 `.gitignore`，不推送）
+- 使用 `dotenv-spring-boot-starter` 自动加载 `.env` 文件
 
 ## Development Guidelines
 
