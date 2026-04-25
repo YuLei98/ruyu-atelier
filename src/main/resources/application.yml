@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: framework
+  profiles:
+    active: default
+
+server:
+  port: 8000
+
+# API Access Log 配置
+api-access-log:
+  trace-id-header: X-Trace-Id
+  max-body-length: 1000
+  logger-name: apiAccessLog
+  exclude-methods: OPTIONS
+
+# JWT 配置
+jwt:
+  secret-key: ${JWT_SECRET_KEY:your-secret-key-here-change-in-production}
+
+# Redis 配置
+spring.data.redis:
+  timeout: 200
+  port: ${REDIS_PORT:6379}
+  password: ${REDIS_PASSWORD:foobared}
+  lettuce:
+    pool:
+      max-wait: 300
+
+# OAuth2 配置
+oauth:
+  acceptMediaType: application/json
+  authorizationScheme: Bearer
+  accessTokenField: access_token
+  errorField: error
+  errorDescriptionField: error_description
+
+github:
+  client:
+    clientId: ${GITHUB_CLIENT_ID:}
+    clientSecret: ${GITHUB_CLIENT_SECRET:}
+    authorizeUrl: https://github.com/login/oauth/authorize
+    accessTokenUrl: https://github.com/login/oauth/access_token
+    redirectUrl: ${GITHUB_REDIRECT_URL:http://localhost:8000/oauth/redirect}
+    userInfoUrl: https://api.github.com/user
+    provider: github
+    grantType: authorization_code
+    userIdField: id
+    usernameField: login
+    avatarUrlField: avatar_url
+    emailField: email
+
+# DataSource 配置
+spring.datasource:
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  url: ${DATASOURCE_URL:jdbc:mysql://localhost:3306/springboot_demo?characterEncoding=utf8}
+  username: ${DATASOURCE_USERNAME:root}
+  password: ${DATASOURCE_PASSWORD:root}
+
+# ========== RateLimiter 限流配置 ==========
+# 全局限流开关
+ratelimit:
+  global:
+    enabled: true
+    # 限流算法：SLIDING_WINDOW 或 TOKEN_BUCKET
+    algorithm: SLIDING_WINDOW
+    # 时间窗口大小（秒）
+    window-seconds: 60
+    # 时间窗口内最大请求数
+    max-requests: 10
+    # 限流维度：IP 或 USER_ID
+    key-type: IP
+    # 限流触发时响应状态码
+    response-status: 429
+    # 限流触发时响应消息
+    response-message: 请求过于频繁，请稍后再试
+  # 限流排除路径
+  exclude-paths:
+    - /user/login
+    - /user/register
+    - /health
+    - /test/**
+
+  # 令牌桶专用配置
+  token-bucket:
+    refill-rate: 10
+    capacity: 100

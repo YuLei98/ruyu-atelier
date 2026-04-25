@@ -4,6 +4,10 @@ import icu.ruiyu.framework.integration.security.auth.JwtAuthenticationTokenFilte
 import icu.ruiyu.framework.integration.security.auth.JwtAuthenticationProvider;
 import icu.ruiyu.framework.integration.security.handler.UnauthorizedResponseHandler;
 import icu.ruiyu.framework.integration.security.handler.AccessDeniedResponseHandler;
+import icu.ruiyu.framework.integration.ratelimit.RateLimiterFilter;
+import icu.ruiyu.framework.integration.ratelimit.RateLimiterService;
+import icu.ruiyu.framework.integration.ratelimit.handler.RateLimitResponseHandler;
+import icu.ruiyu.framework.common.config.RateLimiterProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +42,20 @@ public class WebSecurityConfig {
     @Autowired
     @Lazy
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    private RateLimiterService rateLimiterService;
+
+    @Autowired
+    private RateLimitResponseHandler rateLimitResponseHandler;
+
+    @Autowired
+    private RateLimiterProperties rateLimiterProperties;
+
+    @Bean
+    public RateLimiterFilter rateLimiterFilter() {
+        return new RateLimiterFilter(rateLimiterService, rateLimitResponseHandler, rateLimiterProperties);
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -77,6 +95,8 @@ public class WebSecurityConfig {
                 .headers(headersConfigurer -> headersConfigurer.cacheControl(HeadersConfigurer.CacheControlConfig::disable))
                 // 使用自定义认证 Provider
                 .authenticationProvider(jwtAuthenticationProvider())
+                // 添加全局限流过滤器（在 JWT 过滤器之前）
+                .addFilterBefore(rateLimiterFilter(), UsernamePasswordAuthenticationFilter.class)
                 // 添加 JWT 过滤器
                 .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 // 配置未授权和拒绝访问的响应处理

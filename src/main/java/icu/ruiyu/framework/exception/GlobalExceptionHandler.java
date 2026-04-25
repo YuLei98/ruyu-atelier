@@ -71,4 +71,15 @@ public class GlobalExceptionHandler {
         log.error("参数校验失败，{}", message);
         return CommonResult.fail(message);
     }
+
+    /**
+     * Handles rate limit exceeded exceptions.
+     */
+    @ExceptionHandler(RateLimitException.class)
+    @ResponseStatus(value = HttpStatus.TOO_MANY_REQUESTS)
+    public CommonResult<String> handleRateLimitException(
+            RateLimitException ex) {
+        log.warn("Rate limit exceeded, {}", ex.getMessage());
+        return CommonResult.error(ex.getCode(), ex.getMessage());
+    }
 }

@@ -44,9 +44,9 @@ Server runs on port **8000**.
 ```
 icu.ruiyu.framework/
 ├── common/
-│   ├── config/        # OpenApiConfig, DotenvConfig
-│   ├── annotation/    # @Idempotent, @RecordRequestAndResponse
-│   ├── aspect/        # IdempotentAspect, RecordRequestAndResponseAspect
+│   ├── config/        # OpenApiConfig, DotenvConfig, RateLimiterProperties
+│   ├── annotation/    # @Idempotent, @RecordRequestAndResponse, @RateLimiter
+│   ├── aspect/        # IdempotentAspect, RecordRequestAndResponseAspect, RateLimiterAspect
 │   └── CommonResult, ResponseEnum
 ├── exception/         # BusinessException, GlobalExceptionHandler
 ├── log/
@@ -57,6 +57,10 @@ icu.ruiyu.framework/
     ├── security/      # JWT auth, WebSecurityConfig, AuthController
     ├── mysql/        # User model, UserMapper, TestController
     ├── cache/        # CacheService (Redis wrapper)
+    ├── ratelimit/    # API 限流（滑动窗口/令牌桶算法，Redis + Lua）
+    │   ├── RateLimiterFilter.java       # 全局限流过滤器
+    │   ├── RateLimiterService.java      # 限流服务接口
+    │   └── handler/RateLimitResponseHandler.java
     ├── OAuth2/       # OAuth2 统一登录（支持多 Provider）
     │   ├── config/   # OAuthProperties (通用), GithubProperties (GitHub 专用)
     │   ├── controller/ # OAuthController (统一入口，provider 路由)
@@ -101,6 +105,7 @@ Handles:
 - `BusinessException` (500)
 - `MethodArgumentNotValidException` (400) - Bean Validation errors
 - `ConstraintViolationException` (400) - Method-level validation errors
+- `RateLimitException` (429) - Rate limit exceeded
 
 ### Application Properties
 敏感配置通过 `.env` 文件 + 环境变量读取，默认值为本地开发配置：
@@ -109,11 +114,23 @@ Handles:
 - `spring.data.redis.*` - Redis connection (`${REDIS_PORT/PASSWORD}`)
 - `github.client.*` - GitHub OAuth2 app credentials (`${GITHUB_CLIENT_ID/SECRET}`)
 - `api-access-log.*` - API access log configuration (trace-id-header, max-body-length, logger-name, exclude-methods)
+- `ratelimit.*` - Rate limiter configuration (global enabled, algorithm, window-seconds, max-requests, key-type, exclude-paths)
 
 ### Environment Configuration
 - `.env.example` - 环境变量模板（推送到 GitHub）
 - `.env` - 本地环境变量（已加入 `.gitignore`，不推送）
 - 使用 `dotenv-spring-boot-starter` 自动加载 `.env` 文件
+
+### API Rate Limiter
+支持两种限流模式：
+- **全局限流**：基于 IP 或用户 ID 的全局请求限流（`RateLimiterFilter`）
+- **注解限流**：`@RateLimiter` 注解实现方法级限流
+
+支持两种算法：
+- **滑动窗口**：基于 Redis ZSET，精确控制时间窗口内的请求数
+- **令牌桶**：基于 Redis Hash，支持突发流量
+
+配置文件：`application.yml` 中 `ratelimit.*` 配置项
 
 ## Development Guidelines
 
