@@ -17,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -76,16 +75,20 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 // 禁用 CSRF
-                .csrf(CsrfConfigurer::disable)
+                .csrf(csrf -> csrf.disable())
                 // 基于 Token，不需要 Session
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationRegistry -> authorizationRegistry
                         // 静态资源允许无授权访问
                         .requestMatchers(HttpMethod.GET, "/", "/*.html", "/oauth/**").permitAll()
+                        // Chrome DevTools 探测、favicon 和错误页
+                        .requestMatchers("/.well-known/**", "/favicon.ico", "/error").permitAll()
                         // 登录注册注销允许匿名访问
                         .requestMatchers("/user/login", "/user/register", "/user/logout", "/test/**").permitAll()
                         // Swagger UI 允许匿名访问
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        // Actuator 端点允许匿名访问（健康检查）
+                        .requestMatchers("/actuator/**").permitAll()
                         // 跨域预检请求
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         // 其他请求需要认证

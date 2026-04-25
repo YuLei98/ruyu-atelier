@@ -137,6 +137,18 @@
 			<version>3.0.0</version>
 		</dependency>
 
+		<!-- Actuator 健康检查 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- Micrometer Prometheus 注册器 -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+
 		<!-- LangChain4j - LLM 集成框架 -->
 		<dependency>
 			<groupId>dev.langchain4j</groupId>

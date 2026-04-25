@@ -18,7 +18,13 @@ import java.io.IOException;
 public class UnauthorizedResponseHandler implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.error("Unauthorized access: {}", authException.getMessage());
+        String path = request.getRequestURI();
+        // actuator 端点由 permitAll 放行，匿名请求会触发此 handler，降级为 warn
+        if (path.startsWith("/actuator/")) {
+            log.warn("Anonymous access to {}: {}", path, authException.getMessage());
+            return;
+        }
+        log.error("Unauthorized access: {}", authException.getMessage(), authException);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
