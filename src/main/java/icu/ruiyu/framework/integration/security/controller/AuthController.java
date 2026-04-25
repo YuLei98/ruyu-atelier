@@ -7,6 +7,7 @@ import icu.ruiyu.framework.integration.security.dto.SignInReq;
 import icu.ruiyu.framework.integration.security.dto.SignUpReq;
 import icu.ruiyu.framework.integration.security.model.Constants;
 import icu.ruiyu.framework.integration.security.service.UserService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,13 +45,7 @@ public class AuthController {
      */
     @Idempotent
     @PostMapping("/register")
-    public CommonResult<Void> register(@RequestBody SignUpReq req) {
-        if (req.getUsername() == null || req.getUsername().isBlank()) {
-            return CommonResult.error(400, "用户名不能为空");
-        }
-        if (req.getPassword() == null || req.getPassword().isBlank()) {
-            return CommonResult.error(400, "密码不能为空");
-        }
+    public CommonResult<Void> register(@RequestBody @Valid SignUpReq req) {
         if (userService.usernameExists(req.getUsername())) {
             return CommonResult.error(400, "用户名已存在");
         }
@@ -64,7 +59,7 @@ public class AuthController {
      */
     @Idempotent
     @PostMapping("/login")
-    public CommonResult<String> login(@RequestBody SignInReq req) {
+    public CommonResult<String> login(@RequestBody @Valid SignInReq req) {
         try {
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword());

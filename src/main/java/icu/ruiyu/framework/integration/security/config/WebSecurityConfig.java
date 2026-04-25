@@ -66,6 +66,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/", "/*.html", "/authorize", "/oauth/redirect").permitAll()
                         // 登录注册注销允许匿名访问
                         .requestMatchers("/user/login", "/user/register", "/user/logout", "/test/**").permitAll()
+                        // Swagger UI 允许匿名访问
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // 跨域预检请求
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         // 其他请求需要认证
