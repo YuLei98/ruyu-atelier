@@ -2,8 +2,8 @@ package icu.ruiyu.framework.integration.cache.impl;
 
 import icu.ruiyu.framework.integration.cache.CacheService;
 import icu.ruiyu.framework.integration.cache.ExpireEnum;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.annotation.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -57,22 +57,11 @@ public class CacheServiceImpl implements CacheService {
         return result != null ? result : -2;
     }
 
+    private static final long DEFAULT_LOCK_TIMEOUT_SECONDS = 30;
+
     @Override
     public boolean lock(String key, ExpireEnum expire) {
-        String lockKey = LOCK_PREFIX + key;
-        String lockValue = UUID.randomUUID().toString();
-        while (true) {
-            if (setIfAbsent(lockKey, lockValue, expire)) {
-                log.debug("Lock acquired: {}", lockKey);
-                return true;
-            }
-            try {
-                TimeUnit.MILLISECONDS.sleep(50);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return false;
-            }
-        }
+        return tryLock(key, expire, DEFAULT_LOCK_TIMEOUT_SECONDS);
     }
 
     @Override

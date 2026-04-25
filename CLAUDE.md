@@ -49,7 +49,7 @@ icu.ruiyu.framework/
 │   ├── annotation/    # @Idempotent, @RecordRequestAndResponse, @RateLimiter
 │   ├── aspect/        # IdempotentAspect, RecordRequestAndResponseAspect, RateLimiterAspect
 │   └── CommonResult, ResponseEnum
-├── exception/         # BusinessException, GlobalExceptionHandler
+├── exception/         # BusinessException, OAuthException, GlobalExceptionHandler
 ├── log/
 │   ├── annotation/  # @RecordRequestAndResponse
 │   ├── aspect/       # RecordRequestAndResponseAspect (AOP logging)
@@ -73,7 +73,7 @@ icu.ruiyu.framework/
         └── controller/ # LlmController (REST API)
 
 com.ruiyu.framework/
-└── core/            # Core business logic (UserService)
+└── core/            # Transaction test code
 ```
 
 ### Component Scan
@@ -111,6 +111,7 @@ Handles:
 - `MethodArgumentNotValidException` (400) - Bean Validation errors
 - `ConstraintViolationException` (400) - Method-level validation errors
 - `RateLimitException` (429) - Rate limit exceeded
+- `OAuthException` (401) - OAuth authentication errors
 
 ### Application Properties
 敏感配置通过 `.env` 文件 + 环境变量读取，默认值为本地开发配置：

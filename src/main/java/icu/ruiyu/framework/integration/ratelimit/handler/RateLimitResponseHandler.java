@@ -6,7 +6,7 @@ import icu.ruiyu.framework.common.config.RateLimiterProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
 @Component
 public class RateLimitResponseHandler {
 
-    @Autowired
+    @Resource
     private ObjectMapper objectMapper;
 
     public void handle(HttpServletRequest request, HttpServletResponse response,

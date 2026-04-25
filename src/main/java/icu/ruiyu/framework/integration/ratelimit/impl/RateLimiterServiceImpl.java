@@ -3,7 +3,7 @@ package icu.ruiyu.framework.integration.ratelimit.impl;
 import icu.ruiyu.framework.common.annotation.RateLimiter;
 import icu.ruiyu.framework.integration.ratelimit.RateLimiterService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -21,7 +21,7 @@ import java.util.Collections;
 @Service
 public class RateLimiterServiceImpl implements RateLimiterService {
 
-    @Autowired
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
 
     private DefaultRedisScript<Long> slidingWindowScript;

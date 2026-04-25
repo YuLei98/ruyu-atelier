@@ -1,7 +1,7 @@
 package icu.ruiyu.framework.integration.security.auth;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,10 +19,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class JwtAuthenticationProvider implements AuthenticationProvider {
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
+    @Resource
     private UserDetailsService userDetailsService;
 
     @Override

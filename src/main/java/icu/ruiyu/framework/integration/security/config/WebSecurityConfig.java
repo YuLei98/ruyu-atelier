@@ -8,7 +8,7 @@ import icu.ruiyu.framework.integration.ratelimit.RateLimiterFilter;
 import icu.ruiyu.framework.integration.ratelimit.RateLimiterService;
 import icu.ruiyu.framework.integration.ratelimit.handler.RateLimitResponseHandler;
 import icu.ruiyu.framework.common.config.RateLimiterProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -33,23 +33,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 public class WebSecurityConfig {
-    @Autowired
+    @Resource
     private UnauthorizedResponseHandler unauthorizedHandler;
 
-    @Autowired
+    @Resource
     private AccessDeniedResponseHandler accessDeniedHandler;
 
-    @Autowired
+    @Resource
     @Lazy
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
-    @Autowired
+    @Resource
     private RateLimiterService rateLimiterService;
 
-    @Autowired
+    @Resource
     private RateLimitResponseHandler rateLimitResponseHandler;
 
-    @Autowired
+    @Resource
     private RateLimiterProperties rateLimiterProperties;
 
     @Bean

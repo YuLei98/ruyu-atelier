@@ -9,7 +9,7 @@ import icu.ruiyu.framework.integration.security.model.Constants;
 import icu.ruiyu.framework.integration.security.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,13 +31,13 @@ import java.nio.charset.StandardCharsets;
 @RequestMapping("/user")
 public class AuthController {
 
-    @Autowired
+    @Resource
     private Constants constants;
 
-    @Autowired
+    @Resource
     private UserService userService;
 
-    @Autowired
+    @Resource
     AuthenticationManager authenticationManager;
 
     /**

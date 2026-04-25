@@ -38,7 +38,7 @@ public class RateLimiterProperties {
         /**
          * 时间窗口内最大请求数
          */
-        private int maxRequests = 100;
+        private int maxRequests = 10;
 
         /**
          * 限流维度：IP 或 USER_ID

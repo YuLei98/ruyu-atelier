@@ -1,5 +1,6 @@
 package icu.ruiyu.framework.integration.OAuth2.service;
 
+import icu.ruiyu.framework.exception.OAuthException;
 import icu.ruiyu.framework.integration.OAuth2.model.OAuthUser;
 
 /**
@@ -19,6 +20,7 @@ public interface OAuthService {
      *
      * @param code 授权码
      * @return OAuth 用户信息
+     * @throws OAuthException OAuth 认证失败
      */
-    OAuthUser getUserInfo(String code) throws Exception;
+    OAuthUser getUserInfo(String code) throws OAuthException;
 }

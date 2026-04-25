@@ -5,7 +5,7 @@ import icu.ruiyu.framework.integration.mysql.model.User;
 import icu.ruiyu.framework.integration.security.model.AuthUser;
 import icu.ruiyu.framework.integration.security.model.Role;
 import icu.ruiyu.framework.integration.security.model.RoleType;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ import java.util.List;
  */
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
+    @Resource
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
+    @Resource
     private UserMapper userMapper;
 
     @Override

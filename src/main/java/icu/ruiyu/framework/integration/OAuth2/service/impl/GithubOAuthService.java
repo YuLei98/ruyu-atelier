@@ -2,12 +2,13 @@ package icu.ruiyu.framework.integration.OAuth2.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import icu.ruiyu.framework.exception.OAuthException;
 import icu.ruiyu.framework.integration.OAuth2.config.GithubProperties;
 import icu.ruiyu.framework.integration.OAuth2.config.OAuthProperties;
 import icu.ruiyu.framework.integration.OAuth2.model.OAuthUser;
 import icu.ruiyu.framework.integration.OAuth2.service.OAuthService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,10 +23,10 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class GithubOAuthService implements OAuthService {
 
-    @Autowired
+    @Resource
     private GithubProperties githubProperties;
 
-    @Autowired
+    @Resource
     private OAuthProperties oauthProperties;
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -39,12 +40,12 @@ public class GithubOAuthService implements OAuthService {
     }
 
     @Override
-    public OAuthUser getUserInfo(String code) throws Exception {
+    public OAuthUser getUserInfo(String code) throws OAuthException {
         String accessToken = getAccessToken(code);
         return fetchUserInfo(accessToken);
     }
 
-    private String getAccessToken(String code) throws Exception {
+    private String getAccessToken(String code) throws OAuthException {
         String url = githubProperties.getAccessTokenUrl() +
                 "?client_id=" + githubProperties.getClientId() +
                 "&client_secret=" + githubProperties.getClientSecret() +
@@ -59,14 +60,19 @@ public class GithubOAuthService implements OAuthService {
         String responseStr = response.getBody();
         log.debug("Access token response: {}", responseStr);
 
-        JsonNode jsonNode = objectMapper.readTree(responseStr);
+        JsonNode jsonNode;
+        try {
+            jsonNode = objectMapper.readTree(responseStr);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            throw new OAuthException("Failed to parse access token response", e);
+        }
         if (jsonNode.has(oauthProperties.getErrorField())) {
             String error = jsonNode.get(oauthProperties.getErrorField()).asText();
             String errorDescription = jsonNode.has(oauthProperties.getErrorDescriptionField())
                 ? jsonNode.get(oauthProperties.getErrorDescriptionField()).asText()
                 : "Unknown error";
             log.error("GitHub OAuth error: {} - {}", error, errorDescription);
-            throw new RuntimeException("GitHub OAuth error: " + error + " - " + errorDescription);
+            throw new OAuthException("GitHub OAuth error: " + error + " - " + errorDescription);
         }
 
         return jsonNode.get(oauthProperties.getAccessTokenField()).asText();
@@ -97,7 +103,7 @@ public class GithubOAuthService implements OAuthService {
             oauthUser.setRawData(userInfoStr);
         } catch (Exception e) {
             log.error("Failed to parse GitHub user info", e);
-            throw new RuntimeException("Failed to parse GitHub user info", e);
+            throw new OAuthException("Failed to parse GitHub user info", e);
         }
 
         log.info("Successfully retrieved GitHub user: {}", oauthUser.getUsername());

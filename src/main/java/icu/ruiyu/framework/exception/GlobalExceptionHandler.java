@@ -82,4 +82,15 @@ public class GlobalExceptionHandler {
         log.warn("Rate limit exceeded, {}", ex.getMessage());
         return CommonResult.error(ex.getCode(), ex.getMessage());
     }
+
+    /**
+     * Handles OAuth authentication exceptions.
+     */
+    @ExceptionHandler(OAuthException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public CommonResult<String> handleOAuthException(
+            OAuthException ex) {
+        log.error("OAuth authentication failed, {}", ex.getMessage());
+        return CommonResult.fail(ex.getMessage());
+    }
 }

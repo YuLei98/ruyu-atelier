@@ -1,5 +1,6 @@
 package icu.ruiyu.framework.integration.cache;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,6 +25,7 @@ class CacheServiceTest {
 
     private ValueOperations<String, String> mockValueOps;
 
+    @BeforeEach
     void setUp() {
         mockValueOps = mock(ValueOperations.class);
         when(stringRedisTemplate.opsForValue()).thenReturn(mockValueOps);

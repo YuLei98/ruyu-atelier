@@ -4,7 +4,7 @@ import icu.ruiyu.framework.integration.mysql.mapper.UserMapper;
 import icu.ruiyu.framework.integration.mysql.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -13,7 +13,7 @@ import java.util.Objects;
 @RequestMapping("/mysql")
 public class TestController {
     private static final Logger log = LoggerFactory.getLogger(TestController.class);
-    @Autowired
+    @Resource
     UserMapper userMapper;
 
     @GetMapping("/1")

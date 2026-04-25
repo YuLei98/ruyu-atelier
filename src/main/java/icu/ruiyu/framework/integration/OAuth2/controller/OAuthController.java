@@ -1,9 +1,10 @@
 package icu.ruiyu.framework.integration.OAuth2.controller;
 
+import icu.ruiyu.framework.exception.OAuthException;
 import icu.ruiyu.framework.integration.OAuth2.model.OAuthUser;
 import icu.ruiyu.framework.integration.OAuth2.service.OAuthService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -18,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/oauth")
 public class OAuthController {
 
-    @Autowired
+    @Resource
     private Map<String, OAuthService> oauthServiceMap;
 
     /**
@@ -45,7 +46,7 @@ public class OAuthController {
     @GetMapping("/redirect")
     public ResponseEntity<OAuthUser> redirect(
             @RequestParam("code") String code,
-            @RequestParam(defaultValue = "github") String provider) throws Exception {
+            @RequestParam(defaultValue = "github") String provider) throws OAuthException {
         log.info("Received OAuth callback from provider: {}", provider);
         OAuthService oauthService = getOAuthService(provider);
         OAuthUser oauthUser = oauthService.getUserInfo(code);

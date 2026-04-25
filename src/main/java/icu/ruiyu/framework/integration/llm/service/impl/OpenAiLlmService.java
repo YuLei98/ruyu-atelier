@@ -5,7 +5,7 @@ import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import icu.ruiyu.framework.integration.llm.service.LlmService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class OpenAiLlmService implements LlmService {
 
-    @Autowired
+    @Resource
     private OpenAiChatModel chatModel;
 
     @Override
