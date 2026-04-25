@@ -93,10 +93,10 @@
 <!--            <AppenderRef ref="Filelog"/>-->
 <!--        </Logger>-->
 
-        <!--Druid监控系统信息-->
-        <logger name="druid.sql.Statement" level="debug" additivity="false">
-            <appender-ref ref="druidSqlRollingFile"/>
-        </logger>
+        <!--Druid监控系统信息 (已禁用 - druidSqlRollingFile appender 不存在)-->
+<!--        <logger name="druid.sql.Statement" level="debug" additivity="false">-->
+<!--            <appender-ref ref="druidSqlRollingFile"/>-->
+<!--        </logger>-->
 
         <!-- 针对当前项目下的controller -->
         <logger name="com.ruiyu.framework" level="debug" additivity="false">
