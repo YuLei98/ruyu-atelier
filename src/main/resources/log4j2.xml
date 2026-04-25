@@ -69,13 +69,13 @@
         </RollingFile>
 
         <!--druid的日志记录追加器-->
-<!--        <RollingFile name="druidSqlRollingFile" fileName="${FILE_PATH}/druid-sql.log" filePattern="${FILE_PATH}/$${date:yyyy-MM}/api-%d{yyyy-MM-dd}-%i.log.gz">-->
-<!--            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5level %L %M - %msg%xEx%n"/>-->
-<!--            <Policies>-->
-<!--                <SizeBasedTriggeringPolicy size="500MB"/>-->
-<!--                <TimeBasedTriggeringPolicy/>-->
-<!--            </Policies>-->
-<!--        </RollingFile>-->
+        <RollingFile name="druidSqlRollingFile" fileName="${FILE_PATH}/druid-sql.log" filePattern="${FILE_PATH}/$${date:yyyy-MM}/api-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss}] %-5level %L %M - %msg%xEx%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="500MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
 
     </appenders>
 
@@ -93,10 +93,10 @@
 <!--            <AppenderRef ref="Filelog"/>-->
 <!--        </Logger>-->
 
-        <!--Druid监控系统信息 (已禁用 - druidSqlRollingFile appender 不存在)-->
-<!--        <logger name="druid.sql.Statement" level="debug" additivity="false">-->
-<!--            <appender-ref ref="druidSqlRollingFile"/>-->
-<!--        </logger>-->
+        <!--Druid监控系统信息-->
+        <logger name="druid.sql.Statement" level="debug" additivity="false">
+            <appender-ref ref="druidSqlRollingFile"/>
+        </logger>
 
         <!-- 针对当前项目下的controller -->
         <logger name="com.ruiyu.framework" level="debug" additivity="false">
