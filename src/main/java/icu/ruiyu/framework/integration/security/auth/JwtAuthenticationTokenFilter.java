@@ -1,6 +1,7 @@
 package icu.ruiyu.framework.integration.security.auth;
 
 import icu.ruiyu.framework.integration.security.model.Constants;
+import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -57,8 +58,23 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 解析 Token 获取用户名
-        final String userName = (String) JWTUtil.parseToken(authToken).getPayload("username");
+        // 解析 Token 获取用户名，添加空安全检查
+        String userName = null;
+        try {
+            JWT jwt = JWTUtil.parseToken(authToken);
+            Object usernameClaim = jwt.getPayload("username");
+            if (usernameClaim == null) {
+                log.warn("JWT token missing username claim");
+                authenticationEntryPoint.commence(request, response, null);
+                return;
+            }
+            userName = (String) usernameClaim;
+        } catch (Exception e) {
+            log.warn("Failed to parse JWT token: {}", e.getMessage());
+            authenticationEntryPoint.commence(request, response, null);
+            return;
+        }
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
 
         // 构建认证令牌并设置到 SecurityContext

@@ -29,7 +29,9 @@ public class GithubOAuthService implements OAuthService {
     @Resource
     private OAuthProperties oauthProperties;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Resource
+    private RestTemplate restTemplate;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override

@@ -45,7 +45,7 @@ Server runs on port **8000**.
 ```
 icu.ruiyu.framework/
 ├── common/
-│   ├── config/        # OpenApiConfig, DotenvConfig, RateLimiterProperties
+│   ├── config/        # OpenApiConfig, DotenvConfig, RateLimiterProperties, RestTemplateConfig
 │   ├── annotation/    # @Idempotent, @RecordRequestAndResponse, @RateLimiter
 │   ├── aspect/        # IdempotentAspect, RecordRequestAndResponseAspect, RateLimiterAspect
 │   └── CommonResult, ResponseEnum
@@ -138,6 +138,11 @@ Handles:
 - **令牌桶**：基于 Redis Hash，支持突发流量
 
 配置文件：`application.yml` 中 `ratelimit.*` 配置项
+
+### OAuth2 安全特性
+- **CSRF 防护**：`/oauth/redirect` 接口验证 `state` 参数防止 CSRF 攻击
+- **限流保护**：OAuth 回调接口默认限流 30 次/分钟
+- **统一异常处理**：`OAuthException` 异常由 `GlobalExceptionHandler` 处理
 
 ### LLM 大模型集成
 基于 LangChain4j 1.13.1 的 OpenAI GPT 模型集成：
