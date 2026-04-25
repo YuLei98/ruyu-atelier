@@ -33,6 +33,7 @@ Server runs on port **8000**.
 - **Cache**: Spring Data Redis (StringRedisTemplate)
 - **Logging**: Log4j2 (replaces default Logback) with API access logging
 - **Utilities**: Hutool 5.7.13, Fastjson 2.0.16
+- **Env Config**: dotenv-java 3.0.0 (`.env` file support)
 
 ## Architecture
 
@@ -40,6 +41,7 @@ Server runs on port **8000**.
 ```
 icu.ruiyu.framework/
 ├── common/          # CommonResult, ResponseEnum
+│   └── config/     # DotenvConfig (environment variable loader)
 ├── exception/        # BusinessException, GlobalExceptionHandler
 ├── log/
 │   └── filter/      # ApiAccessLogFilter (HTTP access logging)
