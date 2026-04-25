@@ -50,6 +50,13 @@ github:
     avatarUrlField: avatar_url
     emailField: email
 
+# LangChain4j LLM 配置
+langchain4j:
+  open-ai:
+    api-key: ${OPENAI_API_KEY:}
+    model-name: ${OPENAI_MODEL_NAME:gpt-4o}
+    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
+
 # DataSource 配置
 spring.datasource:
   driver-class-name: com.mysql.cj.jdbc.Driver
