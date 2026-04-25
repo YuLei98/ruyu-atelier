@@ -58,6 +58,7 @@ icu.ruiyu.framework/
     ├── security/      # JWT auth, WebSecurityConfig, AuthController
     ├── mysql/        # User model, UserMapper, TestController
     ├── cache/        # CacheService (Redis wrapper)
+    ├── http/         # HttpClientService (HTTP 请求封装，支持复用)
     ├── ratelimit/    # API 限流（滑动窗口/令牌桶算法，Redis + Lua）
     │   ├── RateLimiterFilter.java       # 全局限流过滤器
     │   ├── RateLimiterService.java      # 限流服务接口
@@ -121,6 +122,7 @@ Handles:
 - `github.client.*` - GitHub OAuth2 app credentials (`${GITHUB_CLIENT_ID/SECRET}`)
 - `api-access-log.*` - API access log configuration (trace-id-header, max-body-length, logger-name, exclude-methods)
 - `ratelimit.*` - Rate limiter configuration (global enabled, algorithm, window-seconds, max-requests, key-type, exclude-paths)
+- `framework.http.*` - HTTP 客户端配置 (connectTimeout, readTimeout, maxConnections)
 - `langchain4j.open-ai.*` - OpenAI API 配置 (`${OPENAI_API_KEY}`, `${OPENAI_BASE_URL}`, `${OPENAI_MODEL_NAME}`)
 
 ### Environment Configuration

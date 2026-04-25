@@ -7,14 +7,13 @@ import icu.ruiyu.framework.integration.OAuth2.config.GithubProperties;
 import icu.ruiyu.framework.integration.OAuth2.config.OAuthProperties;
 import icu.ruiyu.framework.integration.OAuth2.model.OAuthUser;
 import icu.ruiyu.framework.integration.OAuth2.service.OAuthService;
+import icu.ruiyu.framework.integration.http.HttpClientService;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.annotation.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * GitHub OAuth 服务实现
@@ -30,7 +29,7 @@ public class GithubOAuthService implements OAuthService {
     private OAuthProperties oauthProperties;
 
     @Resource
-    private RestTemplate restTemplate;
+    private HttpClientService httpClientService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -54,12 +53,10 @@ public class GithubOAuthService implements OAuthService {
                 "&code=" + code +
                 "&grant_type=" + githubProperties.getGrantType();
 
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.add("accept", oauthProperties.getAcceptMediaType());
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestHeaders);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("accept", oauthProperties.getAcceptMediaType());
 
-        ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
-        String responseStr = response.getBody();
+        String responseStr = httpClientService.post(url, "", headers);
         log.debug("Access token response: {}", responseStr);
 
         JsonNode jsonNode;
@@ -83,13 +80,11 @@ public class GithubOAuthService implements OAuthService {
     private OAuthUser fetchUserInfo(String accessToken) {
         String url = githubProperties.getUserInfoUrl();
 
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.add("accept", oauthProperties.getAcceptMediaType());
-        requestHeaders.add("Authorization", oauthProperties.getAuthorizationScheme() + " " + accessToken);
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestHeaders);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("accept", oauthProperties.getAcceptMediaType());
+        headers.put("Authorization", oauthProperties.getAuthorizationScheme() + " " + accessToken);
 
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-        String userInfoStr = response.getBody();
+        String userInfoStr = httpClientService.get(url, headers);
         log.debug("User info response: {}", userInfoStr);
 
         OAuthUser oauthUser = new OAuthUser();
