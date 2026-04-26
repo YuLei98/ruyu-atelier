@@ -67,6 +67,11 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
+    public boolean setIfAbsent(String key, String value, long timeoutSeconds) {
+        return Boolean.TRUE.equals(stringRedisTemplate.opsForValue().setIfAbsent(key, value, java.time.Duration.ofSeconds(timeoutSeconds)));
+    }
+
+    @Override
     public boolean expire(String key, ExpireEnum expire) {
         return Boolean.TRUE.equals(stringRedisTemplate.expire(key, expire.getExpire()));
     }

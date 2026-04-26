@@ -35,6 +35,12 @@ public interface CacheService {
     boolean setIfAbsent(String key, String value, ExpireEnum expire);
 
     /**
+     * 原子操作：仅当 key 不存在时才设置值（自定义过期时间）
+     * @return true if key was set, false if key already existed
+     */
+    boolean setIfAbsent(String key, String value, long timeoutSeconds);
+
+    /**
      * 给已有 key 设置过期时间
      * @return true if expiration was set, false if key did not exist
      */

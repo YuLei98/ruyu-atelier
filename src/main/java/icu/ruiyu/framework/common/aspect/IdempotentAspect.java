@@ -3,7 +3,7 @@ package icu.ruiyu.framework.common.aspect;
 import com.alibaba.fastjson.JSON;
 import icu.ruiyu.framework.common.annotation.Idempotent;
 import icu.ruiyu.framework.common.CommonResult;
-import icu.ruiyu.framework.integration.cache.CacheClient;
+import icu.ruiyu.framework.integration.cache.CacheService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -11,10 +11,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.Resource;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.Duration;
 
 /**
  * 幂等性 AOP 切面
@@ -27,11 +27,8 @@ public class IdempotentAspect {
 
     private static final String IDEMPOTENT_PREFIX = "idempotent:";
 
-    private final CacheClient cacheClient;
-
-    public IdempotentAspect(CacheClient cacheClient) {
-        this.cacheClient = cacheClient;
-    }
+    @Resource
+    private CacheService cacheService;
 
     @Around("@annotation(icu.ruiyu.framework.common.annotation.Idempotent)")
     public Object idempotentCheck(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -43,9 +40,8 @@ public class IdempotentAspect {
         String value = System.currentTimeMillis() + ":" + method.getName();
 
         int expireSeconds = idempotent.expireSeconds();
-        Duration expire = Duration.ofSeconds(expireSeconds);
 
-        Boolean success = cacheClient.setIfAbsent(key, value, expire);
+        Boolean success = cacheService.setIfAbsent(key, value, expireSeconds);
         if (success == null || !success) {
             log.warn("Duplicate request detected, key: {}", key);
             return CommonResult.error(409, idempotent.message());
