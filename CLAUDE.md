@@ -87,7 +87,7 @@ com.ruiyu.outdoor/       # 户外活动业务
 ├── controller/     # REST API 控制器
 └── sql/            # 数据库初始化脚本
 
-com.ruiyu.framework/
+com.ruiyu.atelier/
 └── core/            # Transaction test code
 ```
 
@@ -178,7 +178,7 @@ xcodebuild -project ios/OutdoorApp/OutdoorApp.xcodeproj \
 - 需要在 `APIService.swift` 中配置正确的 baseURL
 
 ### Component Scan
-`@ComponentScan` covers: `icu.ruiyu.framework`, `com.ruiyu.framework`, `com.ruiyu.outdoor`
+`@ComponentScan` covers: `icu.ruiyu.framework`, `com.ruiyu.atelier`, `com.ruiyu.outdoor`
 MyBatis mappers are scanned from: `icu.ruiyu.framework.integration.mysql.mapper`, `com.ruiyu.outdoor.mapper`
 
 ### Security Architecture
