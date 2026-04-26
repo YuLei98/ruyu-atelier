@@ -153,6 +153,10 @@ Handles:
 - 格式：`method | url | status | duration | req:body | res:body | error`
 - 示例：`POST | https://api.github.com/xxx | 200 | 245ms | req:{} | res:access_token=xxx`
 
+**连接池**：使用 Apache HttpClient5 连接池（maxTotal=100, defaultMaxPerRoute=20）
+
+**支持方法**：GET, POST, PUT, PATCH, DELETE
+
 **配置项** (`application.yml`)：
 ```yaml
 framework.restclient:

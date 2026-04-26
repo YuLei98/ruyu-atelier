@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +37,14 @@ public class GithubOAuthService implements OAuthService {
 
     @Override
     public String getAuthorizationUrl() {
-        return githubProperties.getAuthorizeUrl() +
-                "?client_id=" + githubProperties.getClientId() +
-                "&redirect_uri=" + githubProperties.getRedirectUrl();
+        try {
+            return githubProperties.getAuthorizeUrl() +
+                    "?client_id=" + githubProperties.getClientId() +
+                    "&redirect_uri=" + URLEncoder.encode(githubProperties.getRedirectUrl(), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            log.error("Failed to encode redirect_uri", e);
+            throw new OAuthException("Failed to encode redirect_uri", e);
+        }
     }
 
     @Override

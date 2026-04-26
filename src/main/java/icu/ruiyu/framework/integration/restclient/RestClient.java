@@ -53,6 +53,15 @@ public interface RestClient {
     String put(String url, String body);
 
     /**
+     * PATCH 请求
+     *
+     * @param url  请求地址
+     * @param body 请求体
+     * @return 响应体字符串
+     */
+    String patch(String url, String body);
+
+    /**
      * DELETE 请求
      *
      * @param url 请求地址

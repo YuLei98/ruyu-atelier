@@ -50,6 +50,11 @@ public class RestClientImpl implements RestClient {
     }
 
     @Override
+    public String patch(String url, String body) {
+        return execute(HttpMethod.PATCH, url, body, null);
+    }
+
+    @Override
     public String delete(String url) {
         return delete(url, null);
     }
