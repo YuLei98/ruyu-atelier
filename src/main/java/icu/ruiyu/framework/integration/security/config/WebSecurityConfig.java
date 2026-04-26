@@ -80,11 +80,11 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizationRegistry -> authorizationRegistry
                         // 静态资源允许无授权访问
-                        .requestMatchers(HttpMethod.GET, "/", "/*.html", "/oauth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/*.html", "/api/v1/oauth/**").permitAll()
                         // Chrome DevTools 探测、favicon 和错误页
                         .requestMatchers("/.well-known/**", "/favicon.ico", "/error").permitAll()
                         // 登录注册注销允许匿名访问
-                        .requestMatchers("/user/login", "/user/register", "/user/logout", "/test/**").permitAll()
+                        .requestMatchers("/api/v1/user/login", "/api/v1/user/register", "/api/v1/user/logout", "/test/**").permitAll()
                         // Swagger UI 允许匿名访问
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         // Actuator 端点允许匿名访问（健康检查）

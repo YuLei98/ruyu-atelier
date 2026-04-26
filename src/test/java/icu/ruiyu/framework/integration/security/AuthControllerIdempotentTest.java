@@ -41,7 +41,7 @@ class AuthControllerIdempotentTest {
         req.setPassword("password123");
 
         // First request - should succeed
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
@@ -49,7 +49,7 @@ class AuthControllerIdempotentTest {
                 .andExpect(jsonPath("$.message").value("注册成功"));
 
         // Second request with same params - should be rejected with 409
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
@@ -69,7 +69,7 @@ class AuthControllerIdempotentTest {
         SignUpReq registerReq = new SignUpReq();
         registerReq.setUsername(testUsername);
         registerReq.setPassword("password123");
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerReq)));
 
@@ -78,7 +78,7 @@ class AuthControllerIdempotentTest {
         loginReq.setUsername(testUsername);
         loginReq.setPassword("password123");
 
-        mockMvc.perform(post("/user/login")
+        mockMvc.perform(post("/api/v1/user/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginReq)))
                 .andExpect(status().isOk())
@@ -86,7 +86,7 @@ class AuthControllerIdempotentTest {
                 .andExpect(jsonPath("$.data").isNotEmpty());
 
         // Second login with same credentials - should be rejected with 409
-        mockMvc.perform(post("/user/login")
+        mockMvc.perform(post("/api/v1/user/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginReq)))
                 .andExpect(status().isOk())
@@ -114,14 +114,14 @@ class AuthControllerIdempotentTest {
         req2.setPassword("password123");
 
         // First request for user1 - should succeed
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req1)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200));
 
         // Same request for user2 - should also succeed (different user)
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req2)))
                 .andExpect(status().isOk())

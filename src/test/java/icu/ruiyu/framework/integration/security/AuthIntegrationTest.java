@@ -38,7 +38,7 @@ class AuthIntegrationTest {
         req.setUsername(testUsername);
         req.setPassword("password123");
 
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
@@ -53,7 +53,7 @@ class AuthIntegrationTest {
         SignUpReq req1 = new SignUpReq();
         req1.setUsername(testUsername);
         req1.setPassword("password123");
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req1)))
                 .andExpect(status().isOk())
@@ -62,7 +62,7 @@ class AuthIntegrationTest {
         SignUpReq req2 = new SignUpReq();
         req2.setUsername(testUsername);
         req2.setPassword("password456");
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req2)))
                 .andExpect(status().isOk())
@@ -77,7 +77,7 @@ class AuthIntegrationTest {
         SignUpReq registerReq = new SignUpReq();
         registerReq.setUsername(testUsername);
         registerReq.setPassword("password123");
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerReq)));
 
@@ -85,7 +85,7 @@ class AuthIntegrationTest {
         loginReq.setUsername(testUsername);
         loginReq.setPassword("password123");
 
-        mockMvc.perform(post("/user/login")
+        mockMvc.perform(post("/api/v1/user/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginReq)))
                 .andExpect(status().isOk())
@@ -100,7 +100,7 @@ class AuthIntegrationTest {
         SignUpReq registerReq = new SignUpReq();
         registerReq.setUsername(testUsername);
         registerReq.setPassword("password123");
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/api/v1/user/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerReq)));
 
@@ -108,7 +108,7 @@ class AuthIntegrationTest {
         loginReq.setUsername(testUsername);
         loginReq.setPassword("wrongpassword");
 
-        mockMvc.perform(post("/user/login")
+        mockMvc.perform(post("/api/v1/user/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginReq)))
                 .andExpect(status().isOk())
@@ -122,7 +122,7 @@ class AuthIntegrationTest {
         loginReq.setUsername("nouser_" + System.currentTimeMillis());
         loginReq.setPassword("password123");
 
-        mockMvc.perform(post("/user/login")
+        mockMvc.perform(post("/api/v1/user/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginReq)))
                 .andExpect(status().isOk())
@@ -132,14 +132,14 @@ class AuthIntegrationTest {
 
     @Test
     void testProtectedEndpointWithoutToken() throws Exception {
-        mockMvc.perform(get("/user/info/someuser"))
+        mockMvc.perform(get("/api/v1/user/info/someuser"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     void testProtectedEndpointWithAuth() throws Exception {
-        mockMvc.perform(get("/user/info/admin"))
+        mockMvc.perform(get("/api/v1/user/info/admin"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.message").value("SUCCESS"))
@@ -148,7 +148,7 @@ class AuthIntegrationTest {
 
     @Test
     void testLogout() throws Exception {
-        mockMvc.perform(post("/user/logout"))
+        mockMvc.perform(post("/api/v1/user/logout"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.message").value("注销成功"));

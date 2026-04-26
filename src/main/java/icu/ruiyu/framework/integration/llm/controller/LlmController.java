@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/llm")
+@RequestMapping("/api/v1/llm")
 @Tag(name = "LLM", description = "大模型调用接口")
 public class LlmController {
 

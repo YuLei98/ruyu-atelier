@@ -36,7 +36,7 @@ class OAuthControllerTest {
         githubProperties.setClientId("test_client_id");
         githubProperties.setClientSecret("test_client_secret");
         githubProperties.setAuthorizeUrl("https://github.com/login/oauth/authorize");
-        githubProperties.setRedirectUrl("http://localhost:8000/oauth/redirect");
+        githubProperties.setRedirectUrl("http://localhost:8000/api/v1/oauth/redirect");
         githubProperties.setAccessTokenUrl("https://github.com/login/oauth/access_token");
         githubProperties.setUserInfoUrl("https://api.github.com/user");
         githubProperties.setProvider("github");
@@ -49,9 +49,9 @@ class OAuthControllerTest {
 
     @Test
     void testAuthorizeRedirectUrl() throws Exception {
-        mockMvc.perform(get("/oauth/authorize"))
+        mockMvc.perform(get("/api/v1/oauth/authorize"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("https://github.com/login/oauth/authorize?client_id=test_client_id&redirect_uri=http://localhost:8000/oauth/redirect"));
+                .andExpect(redirectedUrl("https://github.com/login/oauth/authorize?client_id=test_client_id&redirect_uri=http://localhost:8000/api/v1/oauth/redirect"));
     }
 
     @Test
@@ -60,7 +60,7 @@ class OAuthControllerTest {
         assertEquals("test_client_secret", githubProperties.getClientSecret());
         assertEquals("https://github.com/login/oauth/authorize", githubProperties.getAuthorizeUrl());
         assertEquals("https://github.com/login/oauth/access_token", githubProperties.getAccessTokenUrl());
-        assertEquals("http://localhost:8000/oauth/redirect", githubProperties.getRedirectUrl());
+        assertEquals("http://localhost:8000/api/v1/oauth/redirect", githubProperties.getRedirectUrl());
         assertEquals("https://api.github.com/user", githubProperties.getUserInfoUrl());
         assertEquals("github", githubProperties.getProvider());
     }
@@ -75,7 +75,7 @@ class OAuthControllerTest {
 
     @Test
     void testOAuthRedirectWithoutCode() throws Exception {
-        mockMvc.perform(get("/oauth/redirect"))
+        mockMvc.perform(get("/api/v1/oauth/redirect"))
                 .andExpect(status().isBadRequest());
     }
 

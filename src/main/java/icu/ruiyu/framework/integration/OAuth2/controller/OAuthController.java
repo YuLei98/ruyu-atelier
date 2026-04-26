@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 @Slf4j
 @RestController
-@RequestMapping("/oauth")
+@RequestMapping("/api/v1/oauth")
 public class OAuthController {
 
     private static final long STATE_TIMEOUT_SECONDS = 300;

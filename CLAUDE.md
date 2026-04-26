@@ -86,7 +86,7 @@ MyBatis mappers are scanned from `icu.ruiyu.framework.integration.mysql.mapper`.
 - `JwtAuthenticationTokenFilter` intercepts requests, validates JWT tokens
 - `JwtAuthenticationProvider` performs authentication
 - Custom `UnauthorizedResponseHandler` and `AccessDeniedResponseHandler` return JSON error responses
-- Public endpoints: `/`, `/authorize`, `/oauth/redirect`, `/user/login`, `/user/register`, `/test/**`, `/swagger-ui/**`, `/v3/api-docs/**`, OPTIONS (CORS preflight)
+- Public endpoints: `/`, `/api/v1/oauth/authorize`, `/api/v1/oauth/redirect`, `/api/v1/user/login`, `/api/v1/user/register`, `/test/**`, `/swagger-ui/**`, `/v3/api-docs/**`, OPTIONS (CORS preflight)
 
 ### API Documentation
 - Swagger UI: `http://localhost:8000/swagger-ui.html`

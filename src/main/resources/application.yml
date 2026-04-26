@@ -41,7 +41,7 @@ github:
     clientSecret: ${GITHUB_CLIENT_SECRET:}
     authorizeUrl: https://github.com/login/oauth/authorize
     accessTokenUrl: https://github.com/login/oauth/access_token
-    redirectUrl: ${GITHUB_REDIRECT_URL:http://localhost:8000/oauth/redirect}
+    redirectUrl: ${GITHUB_REDIRECT_URL:http://localhost:8000/api/v1/oauth/redirect}
     userInfoUrl: https://api.github.com/user
     provider: github
     grantType: authorization_code
@@ -83,8 +83,8 @@ ratelimit:
     response-message: 请求过于频繁，请稍后再试
   # 限流排除路径
   exclude-paths:
-    - /user/login
-    - /user/register
+    - /api/v1/user/login
+    - /api/v1/user/register
     - /health
     - /test/**
 
