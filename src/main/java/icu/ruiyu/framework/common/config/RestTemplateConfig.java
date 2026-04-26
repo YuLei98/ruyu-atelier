@@ -2,6 +2,7 @@ package icu.ruiyu.framework.common.config;
 
 import icu.ruiyu.framework.integration.restclient.RestClientProperties;
 import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.core5.util.Timeout;
@@ -24,17 +25,21 @@ public class RestTemplateConfig {
         PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
         connectionManager.setMaxTotal(100);
         connectionManager.setDefaultMaxPerRoute(20);
-        connectionManager.setValidateAfterInactivity(Timeout.ofMilliseconds(500));
+
+        // 配置请求超时
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(Timeout.ofMilliseconds(properties.getConnectTimeout()))
+                .setResponseTimeout(Timeout.ofMilliseconds(properties.getReadTimeout()))
+                .build();
 
         // 构建 HttpClient
         HttpClient httpClient = HttpClientBuilder.create()
                 .setConnectionManager(connectionManager)
+                .setDefaultRequestConfig(requestConfig)
                 .build();
 
         // 创建支持连接池的请求工厂
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        factory.setConnectTimeout(Timeout.ofMilliseconds(properties.getConnectTimeout()));
-        factory.setResponseTimeout(Timeout.ofMilliseconds(properties.getReadTimeout()));
 
         return new RestTemplate(factory);
     }

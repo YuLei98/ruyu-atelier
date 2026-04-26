@@ -51,7 +51,7 @@ class OAuthControllerTest {
     void testAuthorizeRedirectUrl() throws Exception {
         mockMvc.perform(get("/api/v1/oauth/authorize"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("https://github.com/login/oauth/authorize?client_id=test_client_id&redirect_uri=http://localhost:8000/api/v1/oauth/redirect"));
+                .andExpect(redirectedUrl("https://github.com/login/oauth/authorize?client_id=test_client_id&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fapi%2Fv1%2Foauth%2Fredirect"));
     }
 
     @Test
