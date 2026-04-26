@@ -2,6 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
+**ruiyu-atelier** 是一个个人开发工作室仓库，承载多个业务项目。
+- 作为脚手架提供通用能力（安全、缓存、日志、限流等）
+- 作为单体业务库，集成多个业务模块（如 outdoor 户外活动）
+
 ## Build & Run Commands
 
 ```bash
@@ -20,7 +25,7 @@ mvn test
 
 # Package and run JAR
 mvn clean install
-java -jar target/framework-0.0.1-SNAPSHOT.jar
+java -jar target/ruiyu-atelier-0.0.1-SNAPSHOT.jar
 ```
 
 Server runs on port **8000**.
@@ -73,13 +78,108 @@ icu.ruiyu.framework/
         ├── service/  # LlmService 接口 + OpenAiLlmService 实现
         └── controller/ # LlmController (REST API)
 
+com.ruiyu.outdoor/       # 户外活动业务
+├── model/          # 实体类 (Activity, TrackPoint, Equipment, Partner 等)
+├── mapper/         # MyBatis Plus Mapper 接口
+├── dto/            # 数据传输对象 (CreateReq, UpdateReq)
+├── service/        # 业务服务接口
+│   └── impl/       # 服务实现
+├── controller/     # REST API 控制器
+└── sql/            # 数据库初始化脚本
+
 com.ruiyu.framework/
 └── core/            # Transaction test code
 ```
 
+### Business Package Database
+每个业务包使用独立的数据库：
+- `com.ruiyu.outdoor` → 业务库 `outdoor`
+- SQL 脚本位于各业务包的 `sql/` 目录下
+- 连接配置通过 `spring.datasource.*` 环境变量指定
+
+### Outdoor 业务模块
+户外活动记录应用后端：
+
+**API 接口**：
+- `POST /api/activities` - 创建活动
+- `GET /api/activities` - 获取活动列表
+- `GET /api/activities/{id}` - 获取活动详情
+- `PUT /api/activities/{id}` - 更新活动
+- `DELETE /api/activities/{id}` - 删除活动
+- `POST /api/activities/{id}/favorite` - 切换收藏状态
+- `POST /api/activities/{id}/track` - 添加轨迹点
+- `GET /api/equipments` - 获取装备列表
+- `POST /api/equipments` - 创建装备
+- `GET /api/partners` - 获取队友列表
+- `POST /api/partners` - 创建队友
+
+**相关文档**：
+- SQL 脚本：`src/main/java/com/ruiyu/outdoor/sql/outdoor.sql`
+- iOS App：`ios/OutdoorApp/`
+
+### iOS App (OutdoorApp)
+基于 SwiftUI/UIKit 的户外活动记录 iOS 应用。
+
+**项目结构**：
+```
+ios/OutdoorApp/
+├── Sources/
+│   ├── App/
+│   │   ├── AppDelegate.swift
+│   │   └── SceneDelegate.swift
+│   ├── Models/
+│   │   ├── Activity.swift
+│   │   ├── TrackPoint.swift
+│   │   ├── Equipment.swift
+│   │   └── Partner.swift
+│   ├── Services/
+│   │   └── APIService.swift
+│   └── ViewControllers/
+│       ├── MainTabBarController.swift
+│       ├── HomeViewController.swift
+│       ├── ActivityCell.swift
+│       ├── ActivityDetailViewController.swift
+│       ├── CreateActivityViewController.swift
+│       ├── TrackViewController.swift
+│       ├── EquipmentViewController.swift
+│       └── ProfileViewController.swift
+└── Resources/
+    └── Assets.xcassets/
+```
+
+**主要功能**：
+- 活动管理：创建、查看、编辑、删除户外活动
+- 轨迹记录：使用 MapKit 记录和展示运动轨迹
+- 装备管理：管理户外装备清单
+- 队友管理：记录活动参与者
+- 活动收藏：标记和管理收藏的活动
+
+**技术栈**：
+- UIKit + SnapKit (Auto Layout)
+- MapKit (地图和轨迹展示)
+- CoreLocation (位置服务)
+- URLSession (网络请求)
+
+**构建和运行**：
+```bash
+# 使用 Xcode 打开
+open ios/OutdoorApp/OutdoorApp.xcodeproj
+
+# 或使用 xcodebuild 构建
+xcodebuild -project ios/OutdoorApp/OutdoorApp.xcodeproj \
+  -scheme OutdoorApp \
+  -configuration Debug \
+  -destination 'platform=iOS Simulator,name=iPhone 16' build
+```
+
+**API 对接**：
+- 基础 URL：`http://localhost:8000`
+- 认证方式：JWT Bearer Token
+- 需要在 `APIService.swift` 中配置正确的 baseURL
+
 ### Component Scan
-`@ComponentScan` covers both `icu.ruiyu.framework` and `com.ruiyu.framework`.
-MyBatis mappers are scanned from `icu.ruiyu.framework.integration.mysql.mapper`.
+`@ComponentScan` covers: `icu.ruiyu.framework`, `com.ruiyu.framework`, `com.ruiyu.outdoor`
+MyBatis mappers are scanned from: `icu.ruiyu.framework.integration.mysql.mapper`, `com.ruiyu.outdoor.mapper`
 
 ### Security Architecture
 - **JWT-based stateless authentication** (no sessions)
