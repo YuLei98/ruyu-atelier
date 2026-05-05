@@ -361,11 +361,15 @@ spring.thymeleaf:
 
 **环境变量**（`.env`）：
 ```bash
+# QQ 邮箱 SMTP 配置
+# 1. 登录 QQ 邮箱 → 设置 → 账户 → 开启 SMTP 服务
+# 2. 生成授权码（需短信验证）
+# 3. MAIL_USERNAME 仅填 QQ 号（不含 @qq.com），MAIL_FROM 填完整邮箱地址
 MAIL_HOST=smtp.qq.com
 MAIL_PORT=587
-MAIL_USERNAME=your-email@qq.com
-MAIL_PASSWORD=your-authorization-code
-MAIL_FROM=your-email@qq.com
+MAIL_USERNAME=your-qq-number          # 仅 QQ 号，不含 @qq.com
+MAIL_PASSWORD=your-authorization-code  # 授权码，非 QQ 密码
+MAIL_FROM=your-email@qq.com           # 完整邮箱地址
 ```
 
 **服务接口** (`EmailService`)：
