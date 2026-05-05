@@ -77,6 +77,9 @@ icu.ruiyu.framework/
         ├── config/   # LlmConfig (LangChain4j Bean 配置)
         ├── service/  # LlmService 接口 + OpenAiLlmService 实现
         └── controller/ # LlmController (REST API)
+    └── email/       # 邮件发送服务 (Spring Mail + SMTP)
+        ├── config/   # EmailProperties (邮件配置)
+        └── service/  # EmailService 接口 + SmtpEmailServiceImpl 实现
 
 com.ruiyu.outdoor/       # 户外活动业务
 ├── model/          # 实体类 (Activity, TrackPoint, Equipment, Partner 等)
@@ -297,6 +300,71 @@ curl -X POST http://localhost:8000/llm/chat \
   -H "Content-Type: application/json" \
   -d '{"message": "解释什么是微服务架构"}'
 ```
+
+### Email 邮件发送服务
+基于 Spring Boot Mail starter + SMTP 协议的邮件发送服务，支持文本邮件、HTML邮件、模板邮件：
+
+**依赖**：
+- `spring-boot-starter-mail` - JavaMailSender
+- `spring-boot-starter-thymeleaf` - 模板引擎
+
+**配置**（`application.yml`）：
+```yaml
+spring.mail:
+  host: ${MAIL_HOST:smtp.qq.com}
+  port: ${MAIL_PORT:587}
+  username: ${MAIL_USERNAME:}
+  password: ${MAIL_PASSWORD:}
+  from: ${MAIL_FROM:}
+  properties:
+    mail.smtp.auth: true
+    mail.smtp.starttls.enable: true
+
+spring.thymeleaf:
+  prefix: classpath:/templates/email/
+  suffix: .html
+  cache: false
+```
+
+**环境变量**（`.env`）：
+```bash
+MAIL_HOST=smtp.qq.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@qq.com
+MAIL_PASSWORD=your-authorization-code
+MAIL_FROM=your-email@qq.com
+```
+
+**服务接口** (`EmailService`)：
+```java
+// 发送文本邮件
+void sendTextEmail(String to, String subject, String content);
+
+// 发送 HTML 邮件
+void sendHtmlEmail(String to, String subject, String htmlContent);
+
+// 发送模板邮件
+void sendTemplateEmail(String to, String subject, String templatePath, Map<String, String> placeholders);
+
+// 发送带附件的邮件
+void sendEmailWithAttachment(String to, String subject, String content, String attachmentPath);
+```
+
+**使用示例**：
+```java
+@Resource
+private EmailService emailService;
+
+// 发送验证码
+Map<String, String> placeholders = new HashMap<>();
+placeholders.put("code", "123456");
+placeholders.put("expireMinutes", "5");
+emailService.sendTemplateEmail("user@example.com", "验证码", "verification", placeholders);
+```
+
+**邮件模板**：`resources/templates/email/` 目录下
+- `notification.html` - 通用通知模板
+- `verification.html` - 验证码模板
 
 ## Development Guidelines
 

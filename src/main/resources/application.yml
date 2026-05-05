@@ -64,6 +64,26 @@ spring.datasource:
   username: ${DATASOURCE_USERNAME:root}
   password: ${DATASOURCE_PASSWORD:root}
 
+# Mail 邮件配置
+spring.mail:
+  host: ${MAIL_HOST:smtp.qq.com}
+  port: ${MAIL_PORT:587}
+  username: ${MAIL_USERNAME:}
+  password: ${MAIL_PASSWORD:}
+  from: ${MAIL_FROM:}
+  properties:
+    mail.smtp.auth: true
+    mail.smtp.starttls.enable: true
+    mail.smtp.starttls.required: true
+
+# Thymeleaf 模板配置
+spring.thymeleaf:
+  prefix: classpath:/templates/
+  suffix: .html
+  mode: HTML
+  encoding: UTF-8
+  cache: false
+
 # ========== RateLimiter 限流配置 ==========
 # 全局限流开关
 ratelimit:
