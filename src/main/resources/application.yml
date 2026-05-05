@@ -113,6 +113,14 @@ ratelimit:
     refill-rate: 10
     capacity: 100
 
+# ========== Cache 二级缓存配置 ==========
+cache:
+  caffeine:
+    max-size: 1000           # L1 最大容量
+    expire-after-write-minutes: 10  # L1 写后过期时间
+  redis:
+    default-expire-minutes: 60     # L2 默认过期时间
+
 # ========== Actuator 健康检查配置 ==========
 management:
   endpoints:
