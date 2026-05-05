@@ -244,6 +244,39 @@ Handles:
 
 配置文件：`application.yml` 中 `ratelimit.*` 配置项
 
+### Caffeine 二级缓存
+Caffeine 本地缓存（L1）+ Redis（L2）二级缓存体系：
+
+**架构**：
+- L1: Caffeine 本地缓存，容量淘汰 + 写后过期
+- L2: Redis 分布式缓存，TTL 过期
+- 读取：L1 → L2 → DB（未命中回填 L1）
+- 写入：同时操作 L1 和 L2
+
+**注解**：
+- `@Cacheable` - 缓存读取
+- `@CacheEvict` - 缓存淘汰
+- `@CachePut` - 缓存更新
+
+**配置** (`application.yml`)：
+```yaml
+cache:
+  caffeine:
+    max-size: 1000
+    expire-after-write-minutes: 10
+  redis:
+    default-expire-minutes: 60
+```
+
+**使用示例**：
+```java
+@Cacheable(value = "user", key = "#userId")
+User getUserById(Long userId);
+
+@CacheEvict(value = "user", key = "#userId")
+void deleteUser(Long userId);
+```
+
 ### OAuth2 安全特性
 - **CSRF 防护**：`/oauth/redirect` 接口验证 `state` 参数防止 CSRF 攻击
 - **限流保护**：OAuth 回调接口默认限流 30 次/分钟
