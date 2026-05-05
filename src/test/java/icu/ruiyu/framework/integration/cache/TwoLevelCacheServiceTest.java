@@ -48,6 +48,7 @@ class TwoLevelCacheServiceTest {
     @Test
     void testGet_L1Hit() {
         // L1 命中测试
+        when(stringRedisTemplate.opsForValue()).thenReturn(valueOperations);
         twoLevelCacheService.put("user", "1", "John", 60);
         String result = twoLevelCacheService.get("user", "1");
         assertEquals("John", result);
@@ -76,10 +77,26 @@ class TwoLevelCacheServiceTest {
     @Test
     void testEvict() {
         // 淘汰缓存
+        when(stringRedisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(stringRedisTemplate.delete(anyString())).thenReturn(true);
         twoLevelCacheService.put("user", "1", "John", 60);
         assertEquals("John", twoLevelCacheService.get("user", "1"));
 
         twoLevelCacheService.evict("user", "1");
         assertNull(twoLevelCacheService.get("user", "1"));
+    }
+
+    @Test
+    void testClear() {
+        // 清空缓存
+        when(stringRedisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(stringRedisTemplate.delete(anyString())).thenReturn(true);
+        twoLevelCacheService.put("user", "1", "John", 60);
+        twoLevelCacheService.put("user", "2", "Jane", 60);
+
+        twoLevelCacheService.clear("user");
+
+        assertNull(twoLevelCacheService.get("user", "1"));
+        assertNull(twoLevelCacheService.get("user", "2"));
     }
 }
