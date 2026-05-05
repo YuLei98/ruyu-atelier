@@ -19,10 +19,9 @@ public interface TwoLevelCacheService {
      * @param cacheName 缓存分区
      * @param key 缓存 key
      * @param value 缓存值
-     * @param l1ExpireMinutes L1 过期时间（分钟）
      * @param l2ExpireMinutes L2 过期时间（分钟）
      */
-    void put(String cacheName, String key, String value, int l1ExpireMinutes, int l2ExpireMinutes);
+    void put(String cacheName, String key, String value, int l2ExpireMinutes);
 
     /**
      * 删除缓存（同时删除 L1 和 L2）

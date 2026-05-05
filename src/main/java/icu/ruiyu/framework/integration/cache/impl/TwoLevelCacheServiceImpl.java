@@ -68,10 +68,10 @@ public class TwoLevelCacheServiceImpl implements TwoLevelCacheService {
     }
 
     @Override
-    public void put(String cacheName, String key, String value, int l1ExpireMinutes, int l2ExpireMinutes) {
+    public void put(String cacheName, String key, String value, int l2ExpireMinutes) {
         String fullKey = buildKey(cacheName, key);
 
-        // 1. 写入 L1
+        // 1. 写入 L1 (使用配置的默认过期时间)
         Cache<Object, Object> l1Cache = caffeineCaches.computeIfAbsent(cacheName, this::createL1Cache);
         l1Cache.put(key, value);
 
